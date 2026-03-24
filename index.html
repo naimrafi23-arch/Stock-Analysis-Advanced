@@ -264,6 +264,22 @@ setInterval(tick,1000);tick();
 document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel-'+b.dataset.tab).classList.add('active');if(b.dataset.tab==='top30'&&!t30Done&&allStocks.length>0)runSmartTop30();if(b.dataset.tab==='top30'&&!allStocks.length)document.getElementById('t30-empty').style.display='block';});});
 
 // ═══ FETCH DATA VIA CORS PROXY ═══
+  // Paste this before your fetchData function
+async function loadMLData() {
+    try {
+        const response = await fetch('./data.json');
+        if (!response.ok) return; 
+        window.mlDatabase = await response.json();
+        console.log("ML Insights Loaded:", window.mlDatabase);
+    } catch (e) {
+        console.log("No data.json found on server.");
+    }
+}
+
+// Update the very last line of your script from:
+// fetchData();
+// To:
+loadMLData().then(() => fetchData());
 async function fetchViaProxy(url){
   for(const proxy of PROXIES){
     try{
